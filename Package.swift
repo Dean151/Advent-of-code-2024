@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "AdventOfCode",
-    platforms: [.macOS(.v13)],
+    platforms: [.macOS(.v14)],
     products: [
         .library(name: "AoC", targets: ["AoC"]),
         .library(name: "Common", targets: ["Common"]),
@@ -37,14 +37,14 @@ let package = Package(
         .executable(name: "Day25", targets: ["Day25"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-async-algorithms", from: "0.0.0"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.2.0"),
         .package(url: "https://github.com/apple/swift-collections", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
     ],
     targets: [
         .target(name: "AoC"),
         .target(name: "Common", dependencies: [
-            .product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+            .product(name: "Algorithms", package: "swift-algorithms"),
             .product(name: "Collections", package: "swift-collections"),
             .product(name: "Crypto", package: "swift-crypto"),
         ]),
