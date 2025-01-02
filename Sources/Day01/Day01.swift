@@ -13,26 +13,69 @@ import Foundation
 import AoC
 import Common
 
+struct List: Parsable {
+    let left: [Int]
+    let right: [Int]
+
+    static func parse(raw: String) throws -> List {
+        var left: [Int] = []
+        var right: [Int] = []
+        for line in raw.components(separatedBy: .newlines) {
+            let numberStrings = line.components(separatedBy: "   ").compactMap(Int.init)
+            guard numberStrings.count == 2 else {
+                throw InputError.couldNotCast(target: Int.self)
+            }
+            left.append(numberStrings[0])
+            right.append(numberStrings[1])
+        }
+        return .init(left: left, right: right)
+    }
+
+    var distance: Int {
+        let left = left.sorted()
+        let right = right.sorted()
+        return zip(left, right).reduce(0) { distance, pair in
+            distance + abs(pair.0 - pair.1)
+        }
+    }
+
+    var similarity: Int {
+        let amounts = right.reduce(into: [Int: Int]()) { amounts, number in
+            amounts[number, default: 0] += 1
+        }
+        return left.reduce(0) { similarity, number in
+            similarity + number * amounts[number, default: 0]
+        }
+    }
+}
+
 @main
 struct Day01: Puzzle {
-    // TODO: Start by defining your input/output types :)
-    typealias Input = String
-    typealias OutputPartOne = Never
-    typealias OutputPartTwo = Never
+    typealias Input = List
+    typealias OutputPartOne = Int
+    typealias OutputPartTwo = Int
 }
+
+let exampleInput = """
+3   4
+4   3
+2   5
+1   3
+3   9
+3   3
+"""
 
 // MARK: - PART 1
 
 extension Day01 {
     static var partOneExpectations: [any Expectation<Input, OutputPartOne>] {
         [
-            // TODO: add expectations for part 1
+            assert(expectation: 11, fromRaw: exampleInput)
         ]
     }
 
     static func solvePartOne(_ input: Input) async throws -> OutputPartOne {
-        // TODO: Solve part 1 :)
-        throw ExecutionError.notSolved
+        return input.distance
     }
 }
 
@@ -41,12 +84,11 @@ extension Day01 {
 extension Day01 {
     static var partTwoExpectations: [any Expectation<Input, OutputPartTwo>] {
         [
-            // TODO: add expectations for part 2
+            assert(expectation: 31, fromRaw: exampleInput)
         ]
     }
 
     static func solvePartTwo(_ input: Input) async throws -> OutputPartTwo {
-        // TODO: Solve part 2 :)
-        throw ExecutionError.notSolved
+        input.similarity
     }
 }
